@@ -63,7 +63,25 @@ contract('TokenFarm', ([owner, recipient]) => {
 
       // Check recipient's balance before staking
       result = await daiToken.balanceOf(recipient)
-      assert.equal(result.toString(), tokens('100'), 'recipient must correct DAI balance before staking') 
+      assert.equal(result.toString(), tokens('100'), 'Recipient must correct DAI balance before staking') 
+
+      // Stake Mock DAI Tokens
+      //    the daiToken smart contract must approve of the amount of staking/ spending of said token before
+      //    it is staked
+      await daiToken.approve(tokenFarm.address, tokens('100'), { from: recipient })
+      await tokenFarm.stakeTokens(tokens('100'), { from: recipient })
+
+      result = await daiToken.balanceOf(recipient)
+      assert.equal(result.toString(), tokens('0'), 'Recipient has incorrect DAI balance after staking')
+      
+      result = await daiToken.balanceOf(tokenFarm.address)
+      assert.equal(result.toString(), tokens('100'), 'TokenFarm has incorrect DAI balance after staking')
+      
+      result = await tokenFarm.stakingBalance(recipient)
+      assert.equal(result.toString(), tokens('100'), 'Recipient has incorrect DAI balance after staking')
+      
+      result = await tokenFarm.isStaking(recipient)
+      assert.equal(result.toString(), 'true', 'Recipient has incorrect staking status after staking')
     })
   })
 
