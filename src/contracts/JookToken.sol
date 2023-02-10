@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract JookToken {
-    string  public name = "Jooks Token";
+    string  public name = "Jook Token";
     string  public symbol = "JOOK";
     uint256 public totalSupply = 1000000000000000000000000; // 1 million tokens
     uint8   public decimals = 18;
