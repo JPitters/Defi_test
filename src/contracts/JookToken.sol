@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-contract DappToken {
+contract JookToken {
     string  public name = "Jooks Token";
     string  public symbol = "JOOK";
     uint256 public totalSupply = 1000000000000000000000000; // 1 million tokens
