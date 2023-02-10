@@ -57,4 +57,14 @@ contract('TokenFarm', ([owner, recipient]) => {
 
   })
 
+  describe('Farming Tokens', async () => {
+    it('rewards for staking DAI tokens', async () => {
+      let result
+
+      // Check recipient's balance before staking
+      result = await daiToken.balanceOf(recipient)
+      assert.equal(result.toString(), tokens('100'), 'recipient must correct DAI balance before staking') 
+    })
+  })
+
 })
