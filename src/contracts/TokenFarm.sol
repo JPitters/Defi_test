@@ -47,11 +47,31 @@ contract TokenFarm {
         hasStaked[msg.sender] = true;
     }
 
+    //  Unstaking tokens (Withdraw)
+    function unstakeTokens() public {
+
+        // Fetch the staking balance
+        uint balance = stakingBalance[msg.sender];
+        
+        // Require amount greater than 0
+        require(balance > 0, "balance cannot be 0 or less than 0");
+        
+        // Tranfer DAI tokens to this contract's address for staking
+        daiToken.transfer(msg.sender, balance);
+
+        // Update staking balance (Reset)
+        stakingBalance[msg.sender] = 0;
+
+        // Update status
+        isStaking[msg.sender] = false;
+    }
+
     //  Issuing Tokens
     function issueTokens() public {
-        //
+        // Made so only the "owner" can call this function
         require(msg.sender == owner, "Token provider must be administrative owner");
 
+        // Owner is accessing the function, so tokens are thus issued
         for (uint i=0; i < stakers.length; i++){
             address recipient = stakers[i];
             uint balance = stakingBalance[recipient];
@@ -60,7 +80,4 @@ contract TokenFarm {
             }
         }
     }
-
-    //  Unstaking tokens (Withdraw)
-
 }

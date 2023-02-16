@@ -65,7 +65,7 @@ contract('TokenFarm', ([owner, recipient]) => {
       result = await daiToken.balanceOf(recipient)
       assert.equal(result.toString(), tokens('100'), 'Recipient must correct DAI balance before staking') 
 
-      // Stake Mock DAI Tokens
+      // Stake Mock DAI Tokens -------------------
       //    the daiToken smart contract must approve of the amount of staking/ spending of said token before
       //    it is staked
       await daiToken.approve(tokenFarm.address, tokens('100'), { from: recipient })
@@ -82,6 +82,36 @@ contract('TokenFarm', ([owner, recipient]) => {
       
       result = await tokenFarm.isStaking(recipient)
       assert.equal(result.toString(), 'true', 'Recipient has incorrect staking status after staking')
+
+
+      // Issuing Tokens -------------------
+      await tokenFarm.issueTokens({ from: owner })
+
+      // Checking balance
+      result = await jookToken.balanceOf(recipient)
+      assert.equal(result.toString(), tokens('100'), 'Recipient JOOK token wallet balance incorrect after issuance')
+
+      // Ensure that only the owner can issue/ provide tokens
+      await tokenFarm.issueTokens({ from: recipient }).should.be.rejected;
+      
+
+      // Unstake Tokens --------------------------
+      await tokenFarm.unstakeTokens({ from: recipient })
+
+      // Check results
+      result = await daiToken.balanceOf(recipient)
+      assert.equal(result.toString(), tokens('100'), 'Recipient has incorrect DAI balance after unstaking')
+      
+      result = await daiToken.balanceOf(tokenFarm.address)
+      assert.equal(result.toString(), tokens('0'), 'TokenFarm has incorrect DAI balance after unstaking')
+      
+      result = await tokenFarm.stakingBalance(recipient)
+      assert.equal(result.toString(), tokens('0'), 'Recipient has incorrect DAI balance after unstaking')
+      
+      result = await tokenFarm.isStaking(recipient)
+      assert.equal(result.toString(), 'false', 'Recipient has incorrect staking status after unstaking')
+      
+
     })
   })
 
